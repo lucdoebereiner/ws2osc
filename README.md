@@ -20,4 +20,4 @@ $ npm run start
 
 ## Usage
 
-See `examples` folder.
+See examples in the `client` folder.
