@@ -1,0 +1,19 @@
+{
+  "name": "ws2osc",
+  "version": "1.0.0",
+  "description": "convert ws to osc messages",
+  "main": "index.js",
+    "scripts": {
+	"build-ts": "tsc",
+	"start": "node built/ws2osc.js",
+	"test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "luc.doebereiner@gmail.com",
+  "license": "GPL-2.0-only",
+  "dependencies": {
+    "@types/ws": "^7.2.6",
+    "osc": "^2.4.1",
+    "typescript": "^3.9.7",
+    "ws": "^7.3.1"
+  }
+}

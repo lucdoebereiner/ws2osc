@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+    <head>
+	<title></title>
+	<meta charset="utf-8" />
+
+
+	<script>
+	 const socket = new WebSocket('ws://localhost:8080');
+
+	 socket.onopen = (event) => {
+	     let msg = {
+		 msgType : "osc",
+		 address: "/example",
+		 args: [
+		     {
+			 type: "f",
+			 value: 1.0
+		     },
+		     {
+			 type: "f",
+			 value: 2.0
+		     }
+		 ]
+	     };
+	     socket.send(JSON.stringify(msg)); 
+	 };
+
+	 socket.onmessage = (message) => {
+	     let msg = JSON.parse(message.data);
+             switch (msg.msgType) {
+		 case "roundtrip":
+		     socket.send(message.data);
+		     break;
+	     };
+		     
+	 };
+	     
+	</script>
+	
+    </head>
+    <body>
+
+    </body>
+</html>
