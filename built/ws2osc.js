@@ -32,7 +32,7 @@ const udpPort = new Osc.UDPPort({
 });
 // Open the socket.
 udpPort.open();
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: 8081 });
 wss.on('connection', function connection(ws) {
     ws.on('message', (message) => {
         let msg = JSON.parse(message);
@@ -71,7 +71,7 @@ setInterval(() => {
     });
     udpPort.send({
         address: "/clients",
-        args: argsArray
+        args: argsArray.reduce((acc, val) => acc.concat(val), [])
     });
 }, 5000);
 //# sourceMappingURL=ws2osc.js.map

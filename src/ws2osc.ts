@@ -15,7 +15,7 @@ const udpPort = new Osc.UDPPort({
 // Open the socket.
 udpPort.open();
 
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: 8081 });
 
 wss.on('connection', function connection(ws) {
 
@@ -64,10 +64,11 @@ setInterval(
                 { type: "f", value: cl.klangraumChannel },
                 { type: "f", value: cl.roundtrip }
             ]
+
         });
         udpPort.send({
             address: "/clients",
-            args: argsArray
+            args: argsArray.reduce((acc, val) => acc.concat(val), [])
         });
     }
     , 5000
