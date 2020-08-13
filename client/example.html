@@ -9,6 +9,8 @@
 	 const socket = new WebSocket('ws://localhost:8080');
 
 	 socket.onopen = (event) => {
+	     socket.send(JSON.stringify({msgType: "id", id: 0, channel: 0}));
+	     
 	     let msg = {
 		 msgType : "osc",
 		 address: "/example",
@@ -32,10 +34,14 @@
 		 case "roundtrip":
 		     socket.send(message.data);
 		     break;
+		 case "osc":
+		     console.log('Got osc msg', message.data);
+		     break;
+
 	     };
-		     
-	 };
 	     
+	 };
+	 
 	</script>
 	
     </head>

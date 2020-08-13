@@ -37,6 +37,11 @@ wss.on('connection', function connection(ws) {
     ws.on('message', (message) => {
         let msg = JSON.parse(message);
         switch (msg.msgType) {
+            case "id":
+                ws.klangraumId = msg.id;
+                ws.klangraumChannel = msg.channel;
+                //                console.log('id msg', msg, (ws as any).klangraumId);
+                break;
             case "osc":
                 udpPort.send({
                     address: msg.address,
@@ -46,10 +51,27 @@ wss.on('connection', function connection(ws) {
             case "roundtrip":
                 let interval = Date.now() - msg.time;
                 ws.roundtrip = interval;
-                console.log(interval);
                 break;
         }
     });
     ws.send(JSON.stringify({ msgType: "roundtrip", time: Date.now() }));
 });
+udpPort.on("message", (oscMsg) => {
+    wss.clients.forEach((client) => client.send(JSON.stringify({ msgType: "osc", msg: oscMsg })));
+    console.log("An OSC message just arrived!", oscMsg);
+});
+setInterval(() => {
+    let clientsArray = Array.from(wss.clients);
+    let argsArray = clientsArray.map((cl) => {
+        return [
+            { type: "f", value: cl.klangraumId },
+            { type: "f", value: cl.klangraumChannel },
+            { type: "f", value: cl.roundtrip }
+        ];
+    });
+    udpPort.send({
+        address: "/clients",
+        args: argsArray
+    });
+}, 5000);
 //# sourceMappingURL=ws2osc.js.map

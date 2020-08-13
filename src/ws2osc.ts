@@ -22,6 +22,11 @@ wss.on('connection', function connection(ws) {
     ws.on('message', (message: string) => {
         let msg = JSON.parse(message);
         switch (msg.msgType) {
+            case "id":
+                (ws as any).klangraumId = msg.id;
+                (ws as any).klangraumChannel = msg.channel;
+                //                console.log('id msg', msg, (ws as any).klangraumId);
+                break;
             case "osc":
                 udpPort.send({
                     address: msg.address,
@@ -41,3 +46,29 @@ wss.on('connection', function connection(ws) {
 
 
 
+udpPort.on("message", (oscMsg: any) => {
+
+    wss.clients.forEach((client) => client.send(JSON.stringify({ msgType: "osc", msg: oscMsg })));
+
+    console.log("An OSC message just arrived!", oscMsg);
+
+});
+
+
+setInterval(
+    () => {
+        let clientsArray = Array.from(wss.clients);
+        let argsArray = clientsArray.map((cl: any) => {
+            return [
+                { type: "f", value: cl.klangraumId },
+                { type: "f", value: cl.klangraumChannel },
+                { type: "f", value: cl.roundtrip }
+            ]
+        });
+        udpPort.send({
+            address: "/clients",
+            args: argsArray
+        });
+    }
+    , 5000
+)
